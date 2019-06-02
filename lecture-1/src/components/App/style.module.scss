@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: flex-start;
+  background-color: #F2F2F2;
+  overflow-y: auto;
+}
+
+.innerContainer {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex-flow: column nowrap;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.header {
+  padding: 10px 20px;
+  flex: none;
+  background-color: cadetblue;
+}
+
+.content {
+  flex: auto;
+}
