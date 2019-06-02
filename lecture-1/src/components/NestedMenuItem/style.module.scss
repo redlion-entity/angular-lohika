@@ -1,0 +1,14 @@
+.nestedMenuItem {
+  padding: 0;
+
+  > a {
+    position: relative;
+
+    &::after {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      margin-top: -5px;
+    }
+  }
+}

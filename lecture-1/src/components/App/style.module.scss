@@ -16,6 +16,12 @@
   overflow: hidden;
 }
 
+.header {
+  padding: 10px 20px;
+  flex: none;
+  background-color: cadetblue;
+}
+
 .content {
   flex: auto;
 }
