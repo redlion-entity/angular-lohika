@@ -1,7 +1,6 @@
-import { Observable, of, fromEvent } from 'rxjs';
-import { fromFetch } from 'rxjs/fetch';
+import { iif, Observable, of, fromEvent } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 import {
-  catchError,
   debounceTime,
   map,
   switchMap
@@ -10,97 +9,103 @@ import {
 import { Branch, Branches, Repo, Repos, SearchResult } from './types'
 
 const input: HTMLElement = document.getElementById('repo-search');
-const observable$: Observable<SearchResult> = fromEvent(input, 'keyup').pipe(
-    debounceTime(1000),
-    map((event: Event): string => event.target.value),
-    switchMap((name: string): Observable<SearchResult> => {
-      if (name.length >= 3) {
-        return fromFetch(`https://api.github.com/search/repositories?q=${name}+in:name`).pipe(
-            switchMap((response: Response): (Observable<SearchResult> | Promise<Repos>) => {
-              if (response.ok) {
-                return response.json();
-              } else {
-                return of({ error: true, message: `Error ${response.status}` });
-              }
-            }),
-            map((data: (SearchResult | Repos)) => (data.hasOwnProperty('items') ? { repos: data.items } : data)),
-            switchMap((data: SearchResult): Observable<SearchResult> => {
-              const { repos }: SearchResult = data
+const observable$: Observable<SearchResult> = fromEvent(input, 'input').pipe(
+  debounceTime(1000),
+  map((event: Event): string => (event.target as HTMLInputElement).value),
+  switchMap(
+    (query: string): Observable<Repos> => iif(
+      (): boolean => query && query.length > 2,
+      ajax.getJSON(`https://api.github.com/search/repositories?q=${query}+in:name`),
+      of({ items: [] })
+    )
+  ),
+  map(({ items }: Repos): SearchResult => ({ repos: items })),
+  switchMap(
+    ({ repos }: SearchResult): Observable<(Branches | null)> => iif(
+      (): boolean => repos.length === 1,
+      ((): Observable<Branches> => {
+        if (repos.length > 0) {
+          const { name, owner: { login } }: Repo = repos[0];
 
-              if (Array.isArray(repos) && repos.length == 1) {
-                const { name, owner: { login } }: Repo = repos[0];
+          return ajax.getJSON(`https://api.github.com/repos/${login}/${name}/branches`)
+        }
+      })(),
+      of(null)
+    ),
+    ({ repos }: SearchResult, branches: (Branches | null)): SearchResult => {
+      const result: SearchResult = { repos };
 
-                return fromFetch(`https://api.github.com/repos/${login}/${name}/branches`).pipe(
-                    switchMap((response: Response): (Observable<SearchResult> | Promise<Branches>) => {
-                      if (response.ok) {
-                        return response.json();
-                      } else {
-                        return of({ error: true, message: `Error ${response.status}` });
-                      }
-                    }),
-                    map((data: (SearchResult | Branches)) => (Array.isArray(data) ? { repos, branches: data } : data))
-                )
-              }
-
-              return of(data)
-            })
-        )
-      } else {
-        return of({ repos: [] })
+      if (branches) {
+        result.branches = branches;
       }
-    }),
-    catchError(error => {
-      return of({ error: true, message: error.message })
-    })
+
+      return result;
+    }
+  )
 );
 
 let reposContainer: HTMLElement, branchesContainer: HTMLElement, errorContainer: HTMLElement;
 const bodyElement: HTMLElement = document.body;
 
-observable$.subscribe(({ repos, branches, error, message }: SearchResult) => {
-  if (reposContainer) {
-    branchesContainer = null;
-    bodyElement.removeChild(reposContainer);
-    reposContainer = null;
-  }
-  if (errorContainer) {
-    bodyElement.removeChild(errorContainer);
-    errorContainer = null;
-  }
-
-  if (repos && repos.length) {
-    if (branches) {
-      let branchesContainerContentStr = '<h5>Branches:</h5><ul>';
-
-      branches.forEach(({ name }: Branch) => branchesContainerContentStr += `<li>${name}</li>`)
-
-      branchesContainerContentStr += '</ul>';
-
-      branchesContainer = document.createElement('div');
-      branchesContainer.innerHTML = branchesContainerContentStr;
+observable$.subscribe(
+  ({ repos, branches }: SearchResult) => {
+    if (reposContainer) {
+      branchesContainer = null;
+      bodyElement.removeChild(reposContainer);
+      reposContainer = null;
+    }
+    if (errorContainer) {
+      bodyElement.removeChild(errorContainer);
+      errorContainer = null;
     }
 
-    let reposContainerContentStr = '<h4>Repositories:</h4><ul>';
+    if (repos && repos.length) {
+      if (branches) {
+        let branchesContainerContentStr = '<h5>Branches:</h5><ul>';
 
-    repos.every(({ full_name }: Repo, index: number): boolean => {
-      reposContainerContentStr += `<li>${index < 5 ? full_name : '...'}</li>`;
+        branches.forEach(({ name }: Branch) => branchesContainerContentStr += `<li>${name}</li>`)
 
-      return index < 5;
-    })
+        branchesContainerContentStr += '</ul>';
 
-    reposContainerContentStr += '</ul><br />';
+        branchesContainer = document.createElement('div');
+        branchesContainer.innerHTML = branchesContainerContentStr;
+      }
 
-    reposContainer = document.createElement('div');
-    reposContainer.innerHTML = reposContainerContentStr;
+      let reposContainerContentStr = '<h4>Repositories:</h4><ul>';
 
-    if (branchesContainer) {
-      reposContainer.appendChild(branchesContainer);
+      repos.every(({ full_name }: Repo, index: number): boolean => {
+        reposContainerContentStr += `<li>${index < 5 ? full_name : '...'}</li>`;
+
+        return index < 5;
+      })
+
+      reposContainerContentStr += '</ul><br />';
+
+      reposContainer = document.createElement('div');
+      reposContainer.innerHTML = reposContainerContentStr;
+
+      if (branchesContainer) {
+        reposContainer.appendChild(branchesContainer);
+      }
+
+      bodyElement.appendChild(reposContainer);
+    }
+  },
+  (error: Error): void => {
+    console.error(error);
+
+    if (reposContainer) {
+      branchesContainer = null;
+      bodyElement.removeChild(reposContainer);
+      reposContainer = null;
+    }
+    if (errorContainer) {
+      bodyElement.removeChild(errorContainer);
+      errorContainer = null;
     }
 
-    bodyElement.appendChild(reposContainer);
-  } else if (error) {
     errorContainer = document.createElement('div');
-    errorContainer.innerHTML = `<h5>Error occurred:</h5><p>${message}</p>`;
-    bodyElement.appendChild(errorContainer);
+      errorContainer.innerHTML = `<h5>Error occurred:</h5><p>${error.name}[${error.message}]</p>`;
+      bodyElement.appendChild(errorContainer);
   }
-});
+);
