@@ -1,26 +1,24 @@
 export type Owner = {
     login: string
-};
-
-export type Repo = {
+  };
+  
+  export type Repo = {
     name: string,
     full_name: string,
     owner: Owner
-};
-
-export type Repos = {
+  };
+  
+  export type Repos = {
     items: Array<Repo>
-};
-
-export type Branch = {
+  };
+  
+  export type Branch = {
     name: string
-};
-
-export type Branches = Array<Branch>;
-
-export type SearchResult = {
-    repos?: Array<Repo>,
-    branches?: Branches,
-    error?: boolean,
-    message?: string
-};
+  };
+  
+  export type Branches = Array<Branch>;
+  
+  export type SearchResult = {
+    repos: Array<Repo>,
+    branches?: Branches
+  };
