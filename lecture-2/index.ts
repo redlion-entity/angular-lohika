@@ -92,8 +92,6 @@ observable$.subscribe(
     }
   },
   (error: Error): void => {
-    console.error(error);
-
     if (reposContainer) {
       branchesContainer = null;
       bodyElement.removeChild(reposContainer);
