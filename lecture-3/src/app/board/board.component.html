@@ -1,0 +1,17 @@
+<div class="inputWrapper">
+  <form (submit)="handleInputSubmit($event)">
+    <input type="text" placeholder="What needs to be done?">
+  </form>
+</div>
+<div class="list" *ngIf="!!tasks.length">
+  <app-list-item
+    *ngFor="let task of tasks"
+    [task]="task"
+    (doneChange)="handleTaskDoneChange($event)"
+    (removeClick)="handleTaskRemoveClick($event)"
+  ></app-list-item>
+</div>
+<div
+  class="summaryFooter"
+  *ngIf="!!tasks.length"
+>Total: {{tasks.length}}&nbsp;&nbsp;|&nbsp;&nbsp;Done: {{getDoneAmount(tasks)}}&nbsp;&nbsp;|&nbsp;&nbsp;Left: {{getLeftAmount(tasks)}}</div>

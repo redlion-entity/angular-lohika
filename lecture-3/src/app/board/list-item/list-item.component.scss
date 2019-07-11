@@ -1,0 +1,48 @@
+:host {
+  display: flex;
+  height: 49px;
+  align-items: center;
+  flex: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    & .removeButton {
+      visibility: visible;
+    }
+  }
+
+  &.done {
+    & .label {
+
+    }
+  }
+}
+
+.checkbox {
+  margin: 0 13px;
+  flex: none;
+
+  &.mat-checkbox-checked + .label {
+    text-decoration-line: line-through;
+    color: rgba(0, 0, 0, 0.25);
+  }
+}
+
+.label {
+  padding: 0 5px;
+  flex: auto;
+  color: rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.removeButton {
+  flex: none;
+  visibility: hidden;
+
+  & .icon {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.4);
+  }
+}

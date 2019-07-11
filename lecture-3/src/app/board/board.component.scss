@@ -1,0 +1,44 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 2px;
+  background-color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.inputWrapper {
+  padding: 7px 40px;
+  flex: none;
+
+  & input {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    border: 0;
+    outline: 0;
+    font-size: 20px;
+    line-height: 24px;
+
+    &::placeholder {
+      font-style: italic;
+      color: rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+.summaryFooter {
+  padding: 7px 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  flex: none;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.4);
+}
