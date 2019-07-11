@@ -1,7 +1,9 @@
 export type Task = {
-    id: string,
-    content: string,
-    done: boolean
+  id: string,
+  description: string,
+  done?: boolean,
 };
 
-export type Tasks = Array<Task>;
+export type Tasks = {
+  [id: number]: Task
+};

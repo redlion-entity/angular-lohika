@@ -26,6 +26,7 @@
       "rxjs/Rx"
     ],
     "interface-name": false,
+    "interface-over-type-literal": false,
     "max-classes-per-file": false,
     "max-line-length": [
       true,
@@ -53,10 +54,10 @@
       "trace"
     ],
     "no-empty": false,
-    "no-inferrable-types": [
+    /*"no-inferrable-types": [
       true,
       "ignore-params"
-    ],
+    ],*/
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,

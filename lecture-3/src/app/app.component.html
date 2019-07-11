@@ -1,0 +1,8 @@
+<h1 class="title">Todos</h1>
+<app-board
+  class="appBoard"
+  [tasks]="tasksList"
+  (add)="handleTaskAdd($event)"
+  (remove)="handleTaskRemove($event)"
+  (doneChange)="handleTaskDoneChange($event)"
+></app-board>

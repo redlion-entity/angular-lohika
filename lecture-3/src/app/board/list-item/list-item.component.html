@@ -1,0 +1,9 @@
+<mat-checkbox
+  class="checkbox"
+  [checked]="!!task.done"
+  (change)="handleCheckboxChange($event.checked)"
+></mat-checkbox>
+<span class="label">{{task.description}}</span>
+<button mat-icon-button class="removeButton" (click)="handleButtonClick()">
+  <mat-icon class="icon">clear</mat-icon>
+</button>
