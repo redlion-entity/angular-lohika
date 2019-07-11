@@ -14,8 +14,9 @@ export class AppComponent {
 
   private getSortedTasksList(): Array<Task> {
     return Object.values(this.tasks)
-      .sort(({ done: done1 }: Task, { done: done2 }: Task): number => {
-        if (done1 != done2) {
+      .reverse()
+      .sort(({ done: done1 = false }: Task, { done: done2 = false }: Task): number => {
+        if (done1 !== done2) {
           return done1 && 1 || -1;
         }
 
