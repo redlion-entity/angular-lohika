@@ -1,0 +1,10 @@
+.file-size-list[dense] {
+  .file-size-list-item {
+    height: 22px;
+    color: limegreen;
+
+    > ::ng-deep .mat-list-item-content {
+      justify-content: flex-end;
+    }
+  }
+}

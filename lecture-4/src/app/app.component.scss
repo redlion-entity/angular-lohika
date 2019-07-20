@@ -1,0 +1,44 @@
+:host {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  background-color: #F3F3F3;
+}
+
+.title {
+  margin: 20px 0;
+  flex: none;
+  font-size: 48px;
+  font-weight: 100;
+  text-align: center;
+  color: #EADBDC;
+}
+
+.container {
+  flex: auto;
+}
+
+.gridList {
+  height: 100%;
+}
+
+.formTile {
+  &::ng-deep .mat-figure {
+    padding: 10px 40px;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
+
+.terminalTile {
+  &::ng-deep .mat-figure {
+    align-items: flex-start;
+    padding: 20px 40px;
+    border-radius: 20px 0 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow-y: auto;
+  }
+}

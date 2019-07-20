@@ -1,0 +1,17 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<h1 class="title">File size app</h1>
+<div class="container">
+  <mat-grid-list class="gridList" cols="2" rowHeight="fit">
+    <mat-grid-tile class="formTile" colspan="1">
+      <form (submit)="handleFormSubmit($event)">
+        <mat-form-field>
+          <input type="number" name="fileSize" matInput placeholder="File size">
+          <span matSuffix>kB</span>
+        </mat-form-field>
+      </form>
+    </mat-grid-tile>
+    <mat-grid-tile class="terminalTile" colspan="1">
+      <app-file-size-list [fileSizes]="fileSizes"></app-file-size-list>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
