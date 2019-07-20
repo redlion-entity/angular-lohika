@@ -1,0 +1,9 @@
+<mat-list class="file-size-list" dense>
+  <mat-list-item
+    class="file-size-list-item"
+    *ngFor="let fileSize of fileSizes"
+    [appColorMarker]="fileSize"
+  >
+    {{fileSize | convertFileSize}}
+  </mat-list-item>
+</mat-list>
